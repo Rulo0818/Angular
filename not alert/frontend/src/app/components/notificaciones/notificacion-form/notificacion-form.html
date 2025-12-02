@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="header">
+    <h1>{{ isEditMode ? 'Editar Notificación' : 'Nueva Notificación' }}</h1>
+  </div>
+
+  <div *ngIf="loading && !isEditMode" class="loading">
+    Guardando...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <div class="form-group">
+      <label for="titulo">Título *</label>
+      <input 
+        type="text" 
+        id="titulo" 
+        formControlName="titulo"
+        class="form-control"
+        [class.invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+        maxlength="150">
+      <div *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched" class="error-message">
+        El título es obligatorio (máximo 150 caracteres)
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="mensaje">Mensaje *</label>
+      <textarea 
+        id="mensaje" 
+        formControlName="mensaje"
+        class="form-control"
+        rows="5"
+        [class.invalid]="form.get('mensaje')?.invalid && form.get('mensaje')?.touched"></textarea>
+      <div *ngIf="form.get('mensaje')?.invalid && form.get('mensaje')?.touched" class="error-message">
+        El mensaje es obligatorio
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo *</label>
+      <select 
+        id="tipo" 
+        formControlName="tipo"
+        class="form-control">
+        <option *ngFor="let tipo of tipos" [value]="tipo">
+          {{ tipo | titlecase }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="fecha">Fecha</label>
+      <input 
+        type="datetime-local" 
+        id="fecha" 
+        formControlName="fecha"
+        class="form-control">
+    </div>
+
+    <div class="form-group checkbox-group">
+      <label>
+        <input 
+          type="checkbox" 
+          formControlName="leido">
+        Marcar como leída
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+        {{ isEditMode ? 'Actualizar' : 'Crear' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="header">
+    <h1>{{ isEditMode ? 'Editar Alerta' : 'Nueva Alerta' }}</h1>
+  </div>
+
+  <div *ngIf="loading && !isEditMode" class="loading">
+    Guardando...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <div class="form-group">
+      <label for="id_producto">ID Producto *</label>
+      <input 
+        type="number" 
+        id="id_producto" 
+        formControlName="id_producto"
+        class="form-control"
+        [class.invalid]="form.get('id_producto')?.invalid && form.get('id_producto')?.touched"
+        min="1">
+      <div *ngIf="form.get('id_producto')?.invalid && form.get('id_producto')?.touched" class="error-message">
+        El ID del producto es obligatorio y debe ser mayor a 0
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="stock_minimo">Stock Mínimo *</label>
+      <input 
+        type="number" 
+        id="stock_minimo" 
+        formControlName="stock_minimo"
+        class="form-control"
+        [class.invalid]="form.get('stock_minimo')?.invalid && form.get('stock_minimo')?.touched"
+        step="0.01"
+        min="0">
+      <div *ngIf="form.get('stock_minimo')?.invalid && form.get('stock_minimo')?.touched" class="error-message">
+        El stock mínimo es obligatorio y no puede ser negativo
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="stock_maximo">Stock Máximo *</label>
+      <input 
+        type="number" 
+        id="stock_maximo" 
+        formControlName="stock_maximo"
+        class="form-control"
+        [class.invalid]="form.get('stock_maximo')?.invalid && form.get('stock_maximo')?.touched"
+        step="0.01"
+        min="0">
+      <div *ngIf="form.get('stock_maximo')?.invalid && form.get('stock_maximo')?.touched" class="error-message">
+        <span *ngIf="form.get('stock_maximo')?.errors?.['required']">
+          El stock máximo es obligatorio
+        </span>
+        <span *ngIf="form.get('stock_maximo')?.errors?.['stockInvalid']">
+          El stock máximo debe ser mayor o igual al stock mínimo
+        </span>
+        <span *ngIf="form.get('stock_maximo')?.errors?.['min']">
+          El stock máximo no puede ser negativo
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group checkbox-group">
+      <label>
+        <input 
+          type="checkbox" 
+          formControlName="notificar">
+        Activar notificaciones
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+        {{ isEditMode ? 'Actualizar' : 'Crear' }}
+      </button>
+    </div>
+  </form>
+</div>

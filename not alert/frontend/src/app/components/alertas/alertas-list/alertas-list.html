@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="header">
+    <h1>Alertas de Stock</h1>
+    <button class="btn btn-primary" (click)="crearAlerta()">
+      + Nueva Alerta
+    </button>
+  </div>
+
+  <div class="filtros">
+    <div class="filtro-group">
+      <label for="filtro-producto">Filtrar por ID de Producto:</label>
+      <input 
+        type="number" 
+        id="filtro-producto"
+        [(ngModel)]="filtroProducto"
+        placeholder="ID del producto"
+        class="form-control"
+        (keyup.enter)="filtrarPorProducto()">
+      <button class="btn btn-secondary" (click)="filtrarPorProducto()">
+        Buscar
+      </button>
+      <button *ngIf="filtroProducto" class="btn btn-link" (click)="limpiarFiltro()">
+        Limpiar
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Cargando alertas...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="alertas-grid">
+    <div *ngFor="let alerta of alertas" class="alerta-card">
+      <div class="alerta-header">
+        <h3>Alerta #{{ alerta.id_alerta }}</h3>
+        <div class="alerta-estado">
+          <label class="switch">
+            <input 
+              type="checkbox" 
+              [checked]="alerta.notificar"
+              (change)="toggleNotificar(alerta)">
+            <span class="slider"></span>
+          </label>
+          <span>{{ alerta.notificar ? 'Notificaciones activas' : 'Notificaciones desactivadas' }}</span>
+        </div>
+      </div>
+
+      <div class="alerta-body">
+        <div class="info-item">
+          <strong>ID Producto:</strong>
+          <span>{{ alerta.id_producto }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Stock Mínimo:</strong>
+          <span class="stock-min">{{ alerta.stock_minimo }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Stock Máximo:</strong>
+          <span class="stock-max">{{ alerta.stock_maximo }}</span>
+        </div>
+      </div>
+
+      <div class="alerta-footer">
+        <div class="acciones">
+          <button class="btn btn-sm btn-edit" (click)="editarAlerta(alerta.id_alerta)">
+            Editar
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="eliminarAlerta(alerta.id_alerta)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="alertas.length === 0" class="empty-state">
+      <p>No hay alertas disponibles</p>
+    </div>
+  </div>
+</div>
